@@ -52,3 +52,68 @@ window.addEventListener('DOMContentLoaded', event => {
     });
 
 });
+
+// Function to fetch portfolio data and render it
+async function loadPortfolioItems() {
+    const container = document.getElementById('portfolio-items-container');
+    if (!container) {
+        console.error('Portfolio container not found!');
+        return;
+    }
+
+    container.innerHTML = 'Loading portfolio items...'; // Show loading message
+
+    try {
+        const response = await fetch('/api/portfolio'); // Make API call to your Express server
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const portfolioItems = await response.json(); // Parse the JSON response
+
+        // Clear loading message
+        container.innerHTML = '';
+
+        // Generate HTML for each portfolio item and append to the container
+        portfolioItems.forEach(item => {
+            const portfolioHtml = `
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <div class="portfolio-item">
+                        <a class="portfolio-link" data-bs-toggle="modal" href="#${item.modalId}">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="${item.image}" alt="${item.title}" />
+                        </a>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">${item.title}</div>
+                            <div class="portfolio-caption-subheading text-muted">${item.subtitle}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', portfolioHtml); // Add HTML to the container
+        });
+
+        // After dynamically adding portfolio items, re-initialize Bootstrap modals
+        // This is crucial because Bootstrap's JS often attaches event listeners
+        // when the page loads, and new elements added later won't have them.
+        // The Agency template's scripts.js might already handle this implicitly
+        // for modal links using data-bs-toggle. If not, you'd need something like:
+        // var myModal = new bootstrap.Modal(document.getElementById('portfolioModal1'));
+        // (This part might be tricky with the template's existing JS, so keep an eye on it)
+        // For now, we'll assume Bootstrap's data-bs-toggle works or is handled by their script.
+        // For new modals, you'd likely need to ensure the modal HTML structure is also dynamically generated
+        // and attached to the DOM, then initialize them.
+        // For our simple purpose, we're just injecting the grid items.
+        // The modal popups linked by href="#portfolioModalX" will only work if the corresponding
+        // modal HTML is already present in index.html or you dynamically add those too.
+        // For this step, we're focusing on the grid items.
+
+    } catch (error) {
+        console.error('Error fetching portfolio items:', error);
+        container.innerHTML = '<p class="text-danger">Failed to load portfolio items. Please try again later.</p>';
+    }
+}
+
+// Call the function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', loadPortfolioItems);

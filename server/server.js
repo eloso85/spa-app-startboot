@@ -7,7 +7,7 @@ const port = 3000;
 app.use(express.static(path.join(__dirname, "public")));
 
 //Api route to serve portfolio data
-app.get("/api/portfoilo", (req, res) => {
+app.get("/api/portfolio", (req, res) => {
   const portfolioData = require("./data/portfolio.json");
   res.json(portfolioData);
 });
