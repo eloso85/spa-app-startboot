@@ -6,15 +6,18 @@ const port = 3000;
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
-//Api route to serve portfolio data
-app.get("/api/portfolio", (req, res) => {
-  const portfolioData = require("./data/portfolio.json");
-  res.json(portfolioData);
-});
+// //Api route to serve portfolio data
+// app.get("/api/portfolio", (req, res) => {
+//   const portfolioData = require("./data/portfolio.json");
+//   res.json(portfolioData);
+// });
+
+app.use('/api', require('./routes/api'));
 
 // Handle SPA routing - exclude files with extensions
 app.get(/^(?!.*\.[a-zA-Z0-9]+$).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+
 });
 
 // Start the server
