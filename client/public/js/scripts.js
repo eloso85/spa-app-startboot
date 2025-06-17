@@ -70,7 +70,7 @@ const loadPage = async (path) => {
 
 async function loadPortfolioItems() {
     try {
-        const res = await fetch('/api/portfolio');
+        const res = await fetch('http://localhost:3000/api/portfolio');
         const data = await res.json();
         const container = document.getElementById('portfolio-items-container');
         if (!container) return;

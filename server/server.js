@@ -1,28 +1,14 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const cors = require('cors');
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, "public")));
-
-// //Api route to serve portfolio data
-// app.get("/api/portfolio", (req, res) => {
-//   const portfolioData = require("./data/portfolio.json");
-//   res.json(portfolioData);
-// });
+app.use(cors());
+app.use(express.json())
 
 app.use('/api', require('./routes/api'));
 
-// Handle SPA routing - exclude files with extensions
-app.get(/^(?!.*\.[a-zA-Z0-9]+$).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+app.listen(PORT, () => {
+    console.log(`API server is running on http://localhost:${PORT}`);
 
 });
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Vanilla SPA app running at http://localhost:${port}`);
-  console.log("Access API data at: http://localhost:${port}/api/portfolio");
-});
-
